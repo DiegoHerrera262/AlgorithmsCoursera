@@ -11,4 +11,4 @@ This repo contains exercises, examples and notes on my learning process during t
 
 I separate each course on a directory. Each directory will contain a log, where all my thoughts and insights will be written, and subdirectories that contain each week's assignments.
 
-The preferred languages for this repo are **Python** and **JavaScript**. To strengthen my abilities on the former language, I will follow Sammie Bae's book 
+The preferred languages for this repo are **Python** and **JavaScript**. To strengthen my abilities on the former language, I will follow Sammie Bae's book **JavaScript Data Structures and Algorithms**.
