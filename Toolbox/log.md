@@ -148,3 +148,37 @@ let templateString = `Hello ${someVariableName}`
 
 ### Standard I/O in JavaScript
 
+Input and output is managed by ```process``` and ```console```. JS seems to be quite object-oriented. The ```process``` is an object that is accessible anywhere. At this stage, there are three attributes which are useful for me: ```process.argv```, ```process.stdout```, ```process.stdin```.
+
+It is possible to write something to standard output using
+
+```js
+process.stdout.write(varToWrite)
+```
+
+It is somewhat like using
+
+```js
+console.log(varToWrite)
+```
+
+But in my device, the first prints an additional ```%``` character in terminal. This happens beacuse *a new line has to be added to process*. The property ```process.argv``` is akin to ```sys.argv``` in Python, so it is quite useful! The process of capturing input is way more convoluted than other programming languages. I don't like this at the moment, but I must suck it up. It is managed by ```process.stdin```.
+
+I still don't get all the details on ```process.stdin```. As far as I'm concerned, this property listens to standard input constantlty, once it is triggerd by an event. This is called **asyncronous execution**. Once it is triggered, some *callback function* is used to process the data. As a result, most of the time, reading from stdin looks like
+
+```js
+process.stdin.on('data', function(data){
+    if(wantToReadData){
+        doSomething(data);
+        decideIfStillReading(wantToReadData);
+    } else{
+        processInformation(readArguments);
+        process.exit();
+    }
+});
+```
+
+This structure is quite inconvenient, not very elegant, and very buggy at this stage of my learning process. Haven't been able to find information about triggering events for ```process.stdin.on```, the only one untill now is ```'data'```. For the moment, this will have to do. 
+
+> The listening process continues indefinitely, unless the port is silenced or the whole app process is exited
+
