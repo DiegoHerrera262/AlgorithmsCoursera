@@ -182,3 +182,93 @@ This structure is quite inconvenient, not very elegant, and very buggy at this s
 
 > The listening process continues indefinitely, unless the port is silenced or the whole app process is exited
 
+## Introduction to Algorithmic Toolbox (week 1)
+
+In this week, we got familiarized with the way the course works. My main goal is to be able to implement effcient algorithms for various computing tasks using JavaScript. It is not enough to be able to write code that works... I has to be fast as lightning. Clients want to be served correctly and fast. Hence my desire to get more familiarized with algorithms. On the other hand, I believe this course allows me to get more acquainted with JS fundamentals.
+
+This week there are two tasks:
+
+1. Sumation of two integers
+1. Maximum Pairwise Product of array
+
+The first one is designed to hel the students familiarize with the way submitions are to be evaluated. The former, is used to present very important tools of algorithm testing:
+
+1. Propose naive solution
+1. Improve upon it
+1. Debug new solution
+1. Stress-test the improved solution
+
+I won't consider too much the problem of adding two numbers. It can be addressed on file ```APlusB.js```. I will focus on the **max pairwise product problem**.
+
+**Important:** Since all numbers are treated the same on JS, overflow is not expected for integer multiplication under the constraints of the coding problems in the course. All numbers are 64-bit.
+
+### Max Pairwise Product
+
+In this exercise, the idea is to find the maximum pairwise product of the elements in a numeric array of non-negative integers. The first idea is to evaluate *all* pairwise products and iterating until max is found. However, in the worst case scenario, that all pairs should be evaluated, it takes $\mathcal{O}(N^2)$ steps to solve. This algorithm can be implemented in JS as:
+
+```js
+function max(numbers){
+    let prod = 0;
+    for (let idx = 0; idx < numbers.length; idx++) {
+        for (let jdx = idx + 1; jdx < numbers.length; jdx++) {
+            let p = numbers[idx] * numbers[jdx]
+            if (p > prod) {
+                prod = p
+            }
+        }
+    }
+    return prod;
+}
+```
+
+This naive solution is quite slow, and fails submition. An obvious improvement is by noting that the maximum value product for an array of *non-negative positive integers*, is just the product of the maximum value and the second maximum value of the numbers inside the array. A better solution thus is simply:
+
+```js
+function max(numbers){
+    // Find the maximum value
+    let maxVal = 0;
+    let maxValIndex = 0;
+    for(let idx = 0; idx < numbers.length; idx++){
+        if(numbers[idx] > maxVal){
+            maxVal = numbers[idx];
+            maxValIndex = idx
+        } 
+    }
+    // Find the second max val
+    let secMaxVal = 0;
+    for (let idx = 0; idx < numbers.length; idx++) {
+        // Find trith of requirement
+        // criteria for updating
+        let isGrater = secMaxVal < numbers[idx];
+        let isNotMax = idx !== maxValIndex;
+        // Check if all criteria matched
+        if (isGrater && isNotMax) secMaxVal = numbers[idx];
+    }
+    return maxVal * secMaxVal;
+}
+```
+
+Sometimes, a proposed fast solution is not completely correct. It may happen that the rush prevent us from considering somewhat *ill-posed* cases that the instructions do not take into account. A way to detect if a solution is not proper, and potentially fix it, is called stress testing.
+
+>The principle of **stress testing** is that two solutions that are both improper, or one improper and other correct, should produce different outcomes for the solution of a given sample case.
+
+As a result, if I generate a large enough sample of random cases, I can check if my fast solution is correct, by proposing a simple but potentially correct solution and comparing the outputs over the set. If one case produces a different output for both solution algorithms, then I can check which is correct. If the incorrect is the fast one, I propose a change that solves the error, and run a test again. This process should be repeated until the sampling takes so long that it can be assumed that the solutions coincide.
+
+**Important:** I should be very sure that the auxiliary solution for comparison is correct, even though it may be really slow.
+
+An example of a stress test can be found at ```Toolbox/week1/max_pairwise_product_stress_test.js```. The proposed fast solution is correct, and thus the stress test would run forever.
+
+##### Some tips on Stress Testing
+
+1. Start with a small subset of test cases where I think an algorithm fails. Finding a counterexample can be hard, specially if the error is small.
+1. Be carefull with ill posed cases that have to do with language limitations, like integer overflow o bad double division. Test them first.
+1. If a mathematical proof that my algorithm is correct can be achieved, go for it! Won't be time wasted for sure.
+
+##### Summary of Stress testing
+
+To check thah an algorithm works properly
+
+1. Test some small cases and see if the output is correct by hand.
+1. Generate a big input and see if program doesn't consume much resourses.
+1. Perform a test over lange ill-posed cases (int overflow, wrong typing, etc.)
+1. Perform a **stress test** to identify mmissed errors.
